@@ -3,7 +3,7 @@ import * as Constants from "../../Utils/config";
 
 async function handler(req, res) {
   try {
-    const id = req.body;
+    const updateTask = req.body;
     const provider = new ethers.providers.JsonRpcProvider(Constants.API_URL);
     const signer = new ethers.Wallet(Constants.PRIVATE_KEY, provider);
     const contract = new ethers.Contract(
@@ -11,10 +11,13 @@ async function handler(req, res) {
       Constants.contractAbi,
       signer
     );
-    const tx = await contract.markTaskAsFinished(id);
+    const tx = await contract.updateTaskDescription(
+      updateTask.taskId,
+      updateTask.description
+    );
     await tx.wait();
 
-    res.status(200).json({ message: "Task has been marked as complete" });
+    res.status(200).json({ message: "Task has been updated !" });
   } catch (error) {
     console.log(error);
   }
